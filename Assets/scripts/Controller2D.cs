@@ -14,39 +14,47 @@ public class Controller2D : MonoBehaviour
     float horizontalRaySpacing;
     float verticalRaySpacing;
 
-    void Start() {
+    void Start()
+    {
 
         colider = GetComponent<BoxCollider2D>();
+
         CalculateRaySpacing();
 
     }
 
-
-
-     public void Move(Vector3 velocity) { 
-        UpdateRaycastOrigins ();
-
-        VerticalCollisions (ref velocity);
-
-        transform.Translate(velocity);
-    }
-    void VerticalCollisions(ref Vector3 velocity)
+    public void Move(Vector3 velocity)
     {
-        float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + skinWidth;
-
-
-        for (int i = 0; i < verticalRayCount; i++)
+           UpdateRaycastOrigins ();
+        if (velocity.x != 0)
         {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+            HorizontalCollisions(ref velocity);
+        }
+        if (velocity.y != 0)
+        {
+            VerticalCollisions(ref velocity);
+        }
+          
 
-            Debug.DrawRay(raycastOrigins.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
-        
-             if (hit)
+        transform.Translate (velocity);
+    }
+
+    void HorizontalCollisions(ref Vector3 velocity)
+    {
+        float directionX = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + skinWidth;
+
+        for (int i = 0; i < horizontalRayCount; i++)
+        {
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            
+            if (hit)
             {
-                velocity.y = (hit.distance - skinWidth) * directionY;
+                velocity.x = (hit.distance - skinWidth) * directionX;
                 rayLength = hit.distance;
 
 
@@ -54,15 +62,52 @@ public class Controller2D : MonoBehaviour
 
 
             }
-        
-        
-        
-        
+
+
+
+
+
         }
 
 
 
-         void UpdateRaycastOrigins ()
+
+
+
+
+
+
+
+
+        void VerticalCollisions(ref Vector3 velocity)
+        {
+            float directionY = Mathf.Sign(velocity.y);
+            float rayLength = Mathf.Abs(velocity.y) + skinWidth;
+
+
+            for (int i = 0; i < verticalRayCount; i++)
+            {
+                Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+                rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+
+                Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+
+                if (hit)
+                {
+                    velocity.y = (hit.distance - skinWidth) * directionY;
+                    rayLength = hit.distance;
+
+
+
+
+
+                }
+
+
+            }
+        }
+        void UpdateRaycastOrigins()
         {
             Bounds bounds = colider.bounds;
             bounds.Expand(skinWidth * -2);
@@ -76,7 +121,7 @@ public class Controller2D : MonoBehaviour
 
         }
 
-        void CalculateRaySpacing ()
+        void CalculateRaySpacing()
         {
 
             Bounds bounds = colider.bounds;
@@ -93,17 +138,20 @@ public class Controller2D : MonoBehaviour
 
 
 
-    struct RaycastOrigins {
+    struct RaycastOrigins
+    {
 
         public Vector2 topLeft, topRight;
         public Vector2 bottomLeft, bottomRight;
     }
 
-    public struct CollisionInfo {
+    public struct CollisionInfo
+    {
         public bool above, below;
         public bool left, right;
 
-        public void Reset() {
+        public void Reset()
+        {
             above = below = false;
             left = right = false;
         }
@@ -111,33 +159,33 @@ public class Controller2D : MonoBehaviour
 
 
 
-} 
-
-
-
-
-        
-
-
-
-    
-    
-
-    
+}
 
 
 
 
 
-    
 
 
 
 
-    
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
