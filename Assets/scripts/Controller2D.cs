@@ -24,7 +24,7 @@ public class Controller2D : MonoBehaviour
 
 
      public void Move(Vector3 velocity) { 
-        UpdateRaycastOrigins();
+        UpdateRaycastOrigins ();
 
         VerticalCollisions (ref velocity);
 
@@ -43,11 +43,26 @@ public class Controller2D : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
 
             Debug.DrawRay(raycastOrigins.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
+        
+             if (hit)
+            {
+                velocity.y = (hit.distance - skinWidth) * directionY;
+                rayLength = hit.distance;
+
+
+
+
+
+            }
+        
+        
+        
+        
         }
 
 
 
-        void UpdateRaycastOrigins()
+         void UpdateRaycastOrigins ()
         {
             Bounds bounds = colider.bounds;
             bounds.Expand(skinWidth * -2);
@@ -61,7 +76,7 @@ public class Controller2D : MonoBehaviour
 
         }
 
-        void CalculateRaySpacing()
+        void CalculateRaySpacing ()
         {
 
             Bounds bounds = colider.bounds;
